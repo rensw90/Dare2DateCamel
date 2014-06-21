@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="Dare2DateCamel:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="Dare2DateCamel-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="Dare2DateCamel:war exploded" />
+    </root>
+  </artifact>
+</component>
