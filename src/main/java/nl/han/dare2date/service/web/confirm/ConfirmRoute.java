@@ -26,28 +26,40 @@ public class ConfirmRoute extends RouteBuilder {
         JaxbDataFormat jaxb = new JaxbDataFormat(ApplyRegistrationRequest.class.getPackage().getName());
 
         from("activemq:queue:request")
-                .unmarshal(jaxb).
-                log("${body}").
-                process(new Echo())
-                .marshal(jaxb).to("activemq:queue:response");
+                .unmarshal(jaxb)
+                .process(new Echo())
+                .marshal(jaxb)
+                .to("activemq:queue:response");
     }
 
     private static final class Echo implements Processor {
         public void process(Exchange exchange) throws Exception {
             ApplyRegistrationResponse registrationResponse = new ApplyRegistrationResponse();
             registrationResponse.setRegistration(exchange.getIn().getBody(ApplyRegistrationRequest.class).getRegistration());
-            Registration registration = exchange.getIn().getBody(Registration.class);
+
+            if (registrationResponse.getRegistration().getUser().getCard().getCvc().equals(1234) && registrationResponse.getRegistration().getUser().getCard().getNumber().equals(12345)) {
+                registrationResponse.getRegistration().setSuccesFul(true);
+            }
+
+            exchange.getOut().setBody(registrationResponse);
+        }
+    }
+    /**
+    private static final class Echo implements Processor {
+        public void process(Exchange exchange) throws Exception {
+            ApplyRegistrationResponse registrationResponse = new ApplyRegistrationResponse();
+       //     registrationResponse.setRegistration(exchange.getIn().getBody(ApplyRegistrationRequest.class).getRegistration());
+            Registration registration = exchange.getIn().getBody(ApplyRegistrationRequest.class).getRegistration();
             Creditcard creditcard = exchange.getIn().getBody(Creditcard.class);
 
             System.out.println("TESTESTSESTSETSET");
 
             if (creditcard.getCvc().equals(1234) && creditcard.getNumber().equals(12345)) {
                 registration.setSuccesFul(true);
-                registrationResponse.setRegistration(registration);
-
             }
-
+            registrationResponse.setRegistration(registration);
             exchange.getOut().setBody(registrationResponse);
         }
     }
+     **/
 }
